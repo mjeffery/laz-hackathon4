@@ -1,4 +1,5 @@
 import { Physics } from 'phaser'
+import Input from './Input'
 import Player from './Player'
 import World from './World'
 
@@ -12,7 +13,8 @@ export default class Game {
 
 		game.physics.startSystem(Physics.ARCADE);
 
-		const player = this.player = new Player(game, 400, 300);
+		const input = this.input = new Input(game);
+		const player = this.player = new Player(game, 400, 300, input);
 		add.existing(player);
 
 		const world = this.world = new World(game);
@@ -22,10 +24,7 @@ export default class Game {
 		const player = this.player,
 			  world = this.world;
 
-		player.think();
-
 		this.world.collide(this.player);
+		player.think();
 	}
-
-	
 }
