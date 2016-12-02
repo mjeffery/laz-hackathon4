@@ -16,7 +16,10 @@ export default class Game {
 		const input = this.input = new Input(game);
 		const player = this.player = new Player(game, 400, 300, input);
 		add.existing(player);
+
+        game.renderer.renderSession.roundPixels = true;
 		game.camera.follow(player);
+        //game.camera.deadzone = new Rectangle(0, 0, 0, 0);
 
 		const world = this.world = new World(game);
 	}
