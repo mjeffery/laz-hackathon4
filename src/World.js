@@ -1,4 +1,4 @@
-import { Tilemap } from 'phaser'
+import { Tilemap, Physics } from 'phaser'
 
 export default class World {
 	
@@ -13,8 +13,15 @@ export default class World {
 		const tilemap = game.add.tilemap('test-map');
 		tilemap.addTilesetImage('test-tileset', 'test-tileset');
 
-		const layer = tilemap.createLayer('Tile Layer 1');
+		const layer = this.layer = tilemap.createLayer('Tile Layer 1');
 		layer.resizeWorld();
+		game.physics.enable(layer, Physics.ARCADE);
+		
+		tilemap.setCollision([2,3,4]);
+	}
+
+	collide(sprite) {
+		this.game.physics.arcade.collide(this.layer, sprite);
 	}
 
 }

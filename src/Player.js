@@ -13,4 +13,8 @@ export default class Player extends Sprite {
 		
 		game.physics.enable(this, Physics.ARCADE);
 	}
+
+	think() {
+	
+	}	
 }

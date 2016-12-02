@@ -17,4 +17,15 @@ export default class Game {
 
 		const world = this.world = new World(game);
 	}
+
+	update() {
+		const player = this.player,
+			  world = this.world;
+
+		player.think();
+
+		this.world.collide(this.player);
+	}
+
+	
 }
