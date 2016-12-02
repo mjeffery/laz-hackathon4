@@ -1,5 +1,5 @@
 #app {
 	width: 800px;
-	margin: auto;
-	padding-top: 30px;
+	margin: 30px auto;
+	border: 1px solid black;
 }

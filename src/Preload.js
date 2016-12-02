@@ -1,3 +1,6 @@
+import Player from './Player'
+import World from './World'
+
 export default class Preload {
 	preload() {
 		const load = this.load,
@@ -10,6 +13,8 @@ export default class Preload {
 		load.setPreloadSprite(this.bar);
 
 		//PRELOAD RESOURCES HERE
+		Player.preload(load);		
+		World.preload(load);
 	}
 
 	onLoadComplete() {
