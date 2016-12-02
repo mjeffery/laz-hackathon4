@@ -1,5 +1,9 @@
 import { Tilemap, Physics } from 'phaser'
 
+const Symbols = {
+    onCollideLava: Symbol('onCollideLava')
+}
+
 export default class World {
 	
 	static preload(load) {
@@ -18,10 +22,23 @@ export default class World {
 		game.physics.enable(layer, Physics.ARCADE);
 		
 		tilemap.setCollision([2,3,4]);
+
+        tilemap.setTileIndexCallback(4, this._hitLava, this);
 	}
 
 	collide(sprite) {
 		this.game.physics.arcade.collide(this.layer, sprite);
 	}
 
+    _hitLava(sprite, tile) {
+        const callback = sprite[Symbols.onCollideLava] 
+        if(callback && (typeof callback === 'function')) {
+            callback.call(sprite, tile);
+        }
+
+        return true;
+    }
+
 }
+
+Object.assign(World, Symbols)

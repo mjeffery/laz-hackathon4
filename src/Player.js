@@ -1,6 +1,7 @@
 import { Sprite, Physics } from 'phaser'
 import { LEFT, RIGHT, JUMP } from './Input'
 import Timer from './Timer'
+import World from './World'
 
 export const Constants = {
 	gravity: 450,
@@ -58,4 +59,8 @@ export default class Player extends Sprite {
 			jumpTimer.setTime(750)
 		}	
 	}
+
+    [World.onCollideLava]() {
+        console.log("lava'd")
+    }
 }
