@@ -1,3 +1,4 @@
+import Fader from './Fader'
 import Player from './Player'
 import World from './World'
 
@@ -13,6 +14,7 @@ export default class Preload {
 		load.setPreloadSprite(this.bar);
 
 		//PRELOAD RESOURCES HERE
+        Fader.preload(load);
 		Player.preload(load);		
 		World.preload(load);
 	}
