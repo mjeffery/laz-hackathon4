@@ -3,7 +3,7 @@ import { LEFT, RIGHT, JUMP } from './Input'
 import Timer from './Timer'
 
 export const Constants = {
-	gravity: 180,
+	gravity: 450,
 	walkSpeed: 350,
 	jumpSpeed: -400 
 }

@@ -2,6 +2,7 @@ export default class Timer {
 
     constructor (game) {
         this.game = game;
+		this.timer = 0;
     }
 
     setTime (time) {
@@ -9,7 +10,9 @@ export default class Timer {
     }
 
     update () {
-        this.timer -= this.game.time.physicsElapsedMS;
+		if(this.timer > 0)
+			this.timer -= this.game.time.physicsElapsedMS;
+
         return this.isDone();
     }
 
