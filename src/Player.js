@@ -25,6 +25,7 @@ export default class Player extends Sprite {
 		game.physics.enable(this, Physics.ARCADE);
 
 		this.body.gravity.set(0, Constants.gravity);
+		this.body.collideWorldBounds = true;
 	}
 
 	think() {

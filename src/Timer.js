@@ -5,7 +5,7 @@ export default class Timer {
     }
 
     setTime (time) {
-        this.time = time;
+        this.timer = time;
     }
 
     update () {
@@ -14,6 +14,6 @@ export default class Timer {
     }
 
     isDone () {
-        return this.timer == 0;
+        return this.timer <= 0;
     }
 }

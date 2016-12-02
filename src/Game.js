@@ -16,6 +16,7 @@ export default class Game {
 		const input = this.input = new Input(game);
 		const player = this.player = new Player(game, 400, 300, input);
 		add.existing(player);
+		game.camera.follow(player);
 
 		const world = this.world = new World(game);
 	}
