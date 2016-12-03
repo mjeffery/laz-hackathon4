@@ -1,8 +1,17 @@
-import { Tilemap, Physics } from 'phaser'
+import { Tilemap, Physics, Point } from 'phaser'
 import levels from './levels'
 
+const Tiles = {
+    EMPTY: 1,
+    SOLID: 2,
+    LAVA: 4,
+    START: 5,
+    EXIT: 6
+}
+
 const Symbols = {
-    onCollideLava: Symbol('onCollideLava')
+    onCollideLava: Symbol('onCollideLava'),
+    onCollideExit: Symbol('onCollideExit')
 }
 
 export default class World {
@@ -12,6 +21,7 @@ export default class World {
 
 	constructor(game) {
 		this.game = game;
+        this.start = new Point(0, 0);
         
         const level = levels.get(game.data.currentLevel);
 		const tilemap = game.add.tilemap(level.tilemap);
@@ -23,11 +33,12 @@ export default class World {
 		
 		tilemap.setCollision([2,3,4]);
 
-        tilemap.setTileIndexCallback(4, this._hitLava, this);
+        this._processTilemap(tilemap);
 	}
 
 	collide(sprite) {
-		this.game.physics.arcade.collide(this.layer, sprite);
+        if(sprite.collidesWithWorld)
+            this.game.physics.arcade.collide(this.layer, sprite);
 	}
 
     _hitLava(sprite, tile) {
@@ -37,6 +48,40 @@ export default class World {
         }
 
         return true;
+    }
+
+    _hitExit(sprite, tile) {
+        const callback = sprite[Symbols.onCollideExit]
+        if(callback && (typeof callback === 'function')) {
+            callback.call(sprite, tile)
+        }
+
+        return false;
+    }
+
+    _processTilemap(tilemap) {
+        tilemap.setTileIndexCallback(Tiles.LAVA, this._hitLava, this);
+
+        for(let x = 0; x < tilemap.width; x++) {
+            for(let y = 0; y < tilemap.height; y++) {
+                let tile = tilemap.getTile(x, y); 
+
+                switch(tile.index) {
+                    case Tiles.START:
+                        let px = x * Math.round(tilemap.tileWidth + tilemap.tileWidth / 2),
+                            py = (y + 1) * tilemap.tileHeight;
+
+                        this.start.setTo(px, py);
+                        tilemap.putTile(Tiles.EMPTY, x, y);
+                        break;
+
+                    case Tiles.EXIT:
+                        tilemap.setTileLocationCallback(x, y, 1, 1, this._hitExit, this);
+                        tilemap.putTile(Tiles.EMPTY, x, y);
+                        break;
+                }
+            }
+        }
     }
 }
 

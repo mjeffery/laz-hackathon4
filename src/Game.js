@@ -2,7 +2,7 @@ import { Physics } from 'phaser'
 
 import TransitionState from './TransitionState'
 import Input from './Input'
-import Player from './Player'
+import Player from './player/Player'
 import World from './World'
 
 const Constants = {
@@ -20,15 +20,16 @@ export default class Game extends TransitionState {
 
 		game.physics.startSystem(Physics.ARCADE);
 
+		const world = this.world = new World(game);
+
 		const input = this.input = new Input(game);
-		const player = this.player = new Player(game, 400, 300, input);
+		const player = this.player = new Player(game, world.start.x, world.start.y, input);
+
 		add.existing(player);
 
         game.renderer.renderSession.roundPixels = true;
 		game.camera.follow(player);
         //game.camera.deadzone = new Rectangle(0, 0, 0, 0);
-
-		const world = this.world = new World(game);
 
         this.fadeIn(Constants.fadeInDelay, Constants.fadeInDuration);
 	}
