@@ -1,4 +1,5 @@
 import { Tilemap, Physics } from 'phaser'
+import levels from './levels'
 
 const Symbols = {
     onCollideLava: Symbol('onCollideLava')
@@ -7,17 +8,16 @@ const Symbols = {
 export default class World {
 	
 	static preload(load) {
-		load.image('test-tileset', 'assets/img/test-tileset.png');
-		load.tilemap('test-map', 'assets/tilemap/test-map.json', null, Tilemap.TILED_JSON);
 	}
 
 	constructor(game) {
 		this.game = game;
+        
+        const level = levels.get(game.data.currentLevel);
+		const tilemap = game.add.tilemap(level.tilemap);
+		tilemap.addTilesetImage(level.tilesetName, level.tileset);
 
-		const tilemap = game.add.tilemap('test-map');
-		tilemap.addTilesetImage('test-tileset', 'test-tileset');
-
-		const layer = this.layer = tilemap.createLayer('Tile Layer 1');
+		const layer = this.layer = tilemap.createLayer(level.layerName);
 		layer.resizeWorld();
 		game.physics.enable(layer, Physics.ARCADE);
 		
@@ -38,7 +38,6 @@ export default class World {
 
         return true;
     }
-
 }
 
 Object.assign(World, Symbols)

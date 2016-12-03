@@ -1,8 +1,9 @@
+import TransitionState from './TransitionState'
 import Fader from './Fader'
 import Player from './Player'
 import World from './World'
 
-export default class Preload {
+export default class Preload extends TransitionState {
 	preload() {
 		const load = this.load,
 			  add = this.add;
@@ -20,6 +21,9 @@ export default class Preload {
 	}
 
 	onLoadComplete() {
-		this.game.state.start('game');
+        this.wait(300)
+            .then( () => this.fadeOut(750, 300) )
+            .then( () => this.game.gotoFirstLevel() );
 	}
+
 }

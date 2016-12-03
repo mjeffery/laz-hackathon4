@@ -1,6 +1,8 @@
 import { Sprite } from 'phaser'
 
-export default class Fader { 
+const tweenToPromise = (tween) => new Promise( (resolve, reject) => tween.onComplete.addOnce(resolve) )
+
+export default class Fader extends Sprite { 
 
     static preload(load) {
         load.image('black', 'assets/img/black.png')
@@ -13,31 +15,36 @@ export default class Fader {
         this.height = game.stage.height;
 
         this.fixedToCamera = true;
-        game.world.bringToFront(this);
-        this.bringToTop();
-
-        this.onComplete = new Phaser.Signal();
     }
 
     fadeIn(delay, duration) {
         const game = this.game,
               tween = game.add.tween(this);
+
+        this.alpha = 1;
+        this._bringToFront();
         
         tween.to({ alpha: 0 }, duration, undefined, true, delay)
 
-        return { onComplete: tween.onComplete }
+        return tweenToPromise(tween)
     }
 
-    fadeOut(delay) {
+    fadeOut(duration, delay) {
         const game = this.game,
               tween = game.add.tween(this)
                 .to({ alpha: 1 }, duration)
                 .to({ alpha: 1 }, delay || 0);
 
         this.alpha = 0;
+        this._bringToFront();
 
         tween.start();
 
-        return { onComplete: tween.onComplete }
+        return tweenToPromise(tween)
+    }
+
+    _bringToFront() {
+        this.game.world.bringToTop(this);
+        this.bringToTop();
     }
 }

@@ -1,9 +1,16 @@
 import { Physics } from 'phaser'
+
+import TransitionState from './TransitionState'
 import Input from './Input'
 import Player from './Player'
 import World from './World'
 
-export default class Game {
+const Constants = {
+    fadeInDelay: 300,
+    fadeInDuration: 750
+}
+
+export default class Game extends TransitionState {
 	
 	create() {
 		const game = this.game,
@@ -22,6 +29,8 @@ export default class Game {
         //game.camera.deadzone = new Rectangle(0, 0, 0, 0);
 
 		const world = this.world = new World(game);
+
+        this.fadeIn(Constants.fadeInDelay, Constants.fadeInDuration);
 	}
 
 	update() {
@@ -31,4 +40,8 @@ export default class Game {
 		this.world.collide(this.player);
 		player.think();
 	}
+
+    getCurrentLevel() {
+        this.game.data.currentLevel
+    }
 }
