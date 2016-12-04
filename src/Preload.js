@@ -2,6 +2,8 @@ import TransitionState from './TransitionState'
 import Fader from './Fader'
 import Player from './Player'
 import World from './World'
+import Collectible from './Collectible'
+import CollectedEffect from './CollectedEffect'
 
 export default class Preload extends TransitionState {
 	preload() {
@@ -18,6 +20,8 @@ export default class Preload extends TransitionState {
         Fader.preload(load);
 		Player.preload(load);		
 		World.preload(load);
+        Collectible.preload(load);
+        CollectedEffect.preload(load);
 	}
 
 	onLoadComplete() {

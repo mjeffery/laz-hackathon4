@@ -9,7 +9,8 @@ export default class Level {
         this._tilesetUrl = data.tileset;
         this._tilemapUrl = data.tilemap;
         this._tilesetName = data.tilesetName;
-        this._layerName = data.layerName;
+        this._layerName = data.layerName || 'Tile Layer 1';
+        this._objectLayerName = data.objectLayerName || 'Object Layer 1';
     }
 
     get name() { return this._name }
@@ -17,6 +18,7 @@ export default class Level {
     get tilemapUrl() { return this._tilemapUrl }
     get tilesetName() { return this._tilesetName }
     get layerName() { return this._layerName }
+    get objectLayerName() { return this._objectLayerName }
     get tileset() { return `${this.name} tileset` }
     get tilemap() { return `${this.name} tilemap` }
 

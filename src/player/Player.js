@@ -3,6 +3,7 @@ import { Sprite, Physics } from 'phaser'
 import StateMachine from '../StateMachine'
 import { LEFT, RIGHT, JUMP } from '../Input'
 import Timer from '../Timer'
+import World from '../World'
 
 export const START = 'start';
 export const STANDING = 'standing';
@@ -186,9 +187,9 @@ export default class Player extends Sprite {
         if(this.jumping) {
             if(!this.wantsToJump || this.jumpPressTimer.isDone()) {
                 this.jumping = false;
-                if(this.jumpPressTimer.isDone()) {
-                    this.body.velocity.y = 0;                    
-                }
+                //if(this.jumpPressTimer.isDone()) {
+                //   this.body.velocity.y = 0;                    
+                //}
             } else {
                 this.body.velocity.y = Constants.jump.speed;
             }
@@ -224,5 +225,9 @@ export default class Player extends Sprite {
 
     onFloor() {
         return this.body.onFloor();
+    }
+
+    [World.onCollideCollectible](coin) {
+        //TODO this is crazy...
     }
 }

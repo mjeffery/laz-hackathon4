@@ -1,4 +1,7 @@
 import { Tilemap, Physics, Point } from 'phaser'
+
+import Collectible from './Collectible'
+import CollectibleEffect from './CollectedEffect'
 import levels from './levels'
 
 const Tiles = {
@@ -11,7 +14,8 @@ const Tiles = {
 
 const Symbols = {
     onCollideLava: Symbol('onCollideLava'),
-    onCollideExit: Symbol('onCollideExit')
+    onCollideExit: Symbol('onCollideExit'),
+    onCollideCollectible: Symbol('onCollideCollectible')
 }
 
 export default class World {
@@ -22,6 +26,7 @@ export default class World {
 	constructor(game) {
 		this.game = game;
         this.start = new Point(0, 0);
+
         
         const level = levels.get(game.data.currentLevel);
 		const tilemap = game.add.tilemap(level.tilemap);
@@ -34,11 +39,17 @@ export default class World {
 		tilemap.setCollision([2,3,4]);
 
         this._processTilemap(tilemap);
+
+        new CollectibleEffect(game);
+        const collectibles = this.collectibles = game.add.group();
+        tilemap.createFromObjects(level.objectLayerName, 'coin', undefined, undefined, true, false, collectibles, Collectible);
 	}
 
 	collide(sprite) {
-        if(sprite.collidesWithWorld)
+        if(sprite.collidesWithWorld) {
             this.game.physics.arcade.collide(this.layer, sprite);
+            this.game.physics.arcade.collide(sprite, this.collectibles, undefined, this._hitCollectible, this);
+        }
 	}
 
     _hitLava(sprite, tile) {
@@ -54,6 +65,16 @@ export default class World {
         const callback = sprite[Symbols.onCollideExit]
         if(callback && (typeof callback === 'function')) {
             callback.call(sprite, tile)
+        }
+
+        return false;
+    }
+
+    _hitCollectible(sprite, collectible) {
+        const callback = sprite[Symbols.onCollideCollectible]
+        if(callback && (typeof callback == 'function')) {
+            callback.call(sprite, collectible);
+            Collectible.onCollected.dispatch(collectible);
         }
 
         return false;
@@ -82,6 +103,7 @@ export default class World {
                 }
             }
         }
+
     }
 }
 
