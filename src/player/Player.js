@@ -14,7 +14,8 @@ const Constants = {
     gravity: 1200,
     maxSpeed: 500,
     jump: {
-        speed: -600,
+        speed: -450,
+        duration: 175,
         repeatDelay: 750,
         fudgeTime: 100,
         drag: 3600 
@@ -22,7 +23,7 @@ const Constants = {
     walk: {
         acceleration: 1800,
         drag: 2900, //1400,
-        animRate: 6
+        animRate: 7
     }
 }
 
@@ -48,8 +49,10 @@ export default class Player extends Sprite {
     initControls() {
         this.controlVelocity = 0;
         this.wantsToJump = false;
+        this.jumping = false;
 
         this.jumpTimer = new Timer(this.game);
+        this.jumpPressTimer = new Timer(this.game);
         this.jumpFudgeTimer = new Timer(this.game);
     }
 
@@ -74,6 +77,7 @@ export default class Player extends Sprite {
 
     think() {
         this.jumpTimer.update();
+        this.jumpPressTimer.update();
         this.jumpFudgeTimer.update();
 
         this.updateControls();
@@ -143,7 +147,7 @@ export default class Player extends Sprite {
             break;
 
             case JUMPING:
-                if(this.body.velocity.y >= 0) {
+                if(!this.jumping && this.body.velocity.y >= 0) {
                     this.fall();
                 }
             break;
@@ -178,11 +182,23 @@ export default class Player extends Sprite {
             this.facing = 'right';
             this.scale.x = 1;
         }
+
+        if(this.jumping) {
+            if(!this.wantsToJump || this.jumpPressTimer.isDone()) {
+                this.jumping = false;
+                if(this.jumpPressTimer.isDone()) {
+                    this.body.velocity.y = 0;                    
+                }
+            } else {
+                this.body.velocity.y = Constants.jump.speed;
+            }
+        }
     }
 
     stand() {
         this.state.change(STANDING);
         this.animations.play('stand');
+        this.jumping = false;
     }
 
     jump() {
@@ -190,13 +206,15 @@ export default class Player extends Sprite {
         this.animations.play('jump');
 
         this.jumpTimer.setTime(Constants.jump.repeatDelay);
-        this.body.velocity.y = Constants.jump.speed;
+        this.jumpPressTimer.setTime(Constants.jump.duration);
+        this.jumping = true;
     }
 
     fall() {
         this.state.change(FALLING);
         this.animations.play('fall');
         this.jumpFudgeTimer.setTime(Constants.jump.fudgeTime);
+        this.jumping = false;
     }
 
     walk() {
