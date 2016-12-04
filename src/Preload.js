@@ -4,6 +4,7 @@ import Player from './Player'
 import World from './World'
 import Collectible from './Collectible'
 import CollectedEffect from './CollectedEffect'
+import Cannon from './Cannon'
 
 export default class Preload extends TransitionState {
 	preload() {
@@ -21,6 +22,8 @@ export default class Preload extends TransitionState {
 		Player.preload(load);		
         Collectible.preload(load);
         CollectedEffect.preload(load);
+        World.preload(load);
+        Cannon.preload(load);
 	}
 
 	onLoadComplete() {

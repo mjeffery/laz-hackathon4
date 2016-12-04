@@ -4,6 +4,12 @@ const levelData = [
     {
         name: 'level 1-1',
         tileset: 'assets/img/test-tileset.png',
+        tilemap: 'assets/tilemap/high-hat.json',
+        tilesetName: 'test-tileset'
+    },
+    {
+        name: 'level 1-2',
+        tileset: 'assets/img/test-tileset.png',
         tilemap: 'assets/tilemap/test-map.json',
         tilesetName: 'test-tileset',
         layerName: 'Tile Layer 1'

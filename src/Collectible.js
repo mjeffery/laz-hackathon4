@@ -14,4 +14,3 @@ export default class Collectible extends Sprite {
     }
 }
 
-Collectible.onCollected = new Signal();

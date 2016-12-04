@@ -4,7 +4,8 @@ export const TERRAIN = 1;
 export const LAVA = 2;
 export const COLLECTIBLE = 3;
 export const EXIT = 4;
-export const ALL = [TERRAIN, LAVA, COLLECTIBLE, EXIT]
+export const OBJECTS = 5;
+export const ALL = [TERRAIN, LAVA, COLLECTIBLE, EXIT, OBJECTS]
 
 export const DEFAULT_MASK = makeMask([TERRAIN])
 export const ALL_MASK = makeMask(ALL)

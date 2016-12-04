@@ -92,6 +92,7 @@ export default class Player extends Sprite {
     updateControls() {
         const input = this.input;
 
+        this.controlsActive = true;
         this.controlVelocity = 0;
         this.wantsToJump = false;
 

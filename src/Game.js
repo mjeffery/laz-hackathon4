@@ -38,6 +38,10 @@ export default class Game extends TransitionState {
             effect.collect(coin)
         });
 
+        world.events.onTouchExit.add( (sprite, tile) => {
+            
+        });
+
         this.fadeIn(Constants.fadeInDelay, Constants.fadeInDuration);
 	}
 
@@ -49,8 +53,4 @@ export default class Game extends TransitionState {
 		player.think();
         this.collectedEffect.think();
 	}
-
-    getCurrentLevel() {
-        this.game.data.currentLevel
-    }
 }

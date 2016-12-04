@@ -27,8 +27,6 @@ export default class CollectedEffect {
 
         this.initEmitter();
         this.initAudio();
-
-        Collectible.onCollected.add(this.collect, this); 
     }
 
     initEmitter() {

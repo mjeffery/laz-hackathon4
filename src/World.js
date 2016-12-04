@@ -1,6 +1,7 @@
 import { Tilemap, Physics, Point, Signal } from 'phaser'
 
 import Collectible from './Collectible'
+import Cannon from './Cannon'
 import { testMask } from './utils'
 
 import levels from './levels'
@@ -26,6 +27,11 @@ class WorldEvents {
 }
 
 export default class World {
+
+    static preload(load) {
+        load.image('exit-sign', 'assets/img/exit sign.png')
+        load.image('danger-sign', 'assets/img/danger sign.png');
+    }
 	
 	constructor(game) {
 		this.game = game;
@@ -46,6 +52,13 @@ export default class World {
 
         const collectibles = this.collectibles = game.add.group();
         tilemap.createFromObjects(level.objectLayerName, 'coin', undefined, undefined, true, false, collectibles, Collectible);
+
+        const doodads = this.doodads = game.add.group(doodads);
+        tilemap.createFromObjects(level.objectLayerName, 'exit sign', 'exit-sign', undefined, true, false, doodads);
+        tilemap.createFromObjects(level.objectLayerName, 'danger sign', 'danger-sign', undefined, true, false, doodads);
+
+        const objects = this.objects = game.add.group(objects);
+        tilemap.createFromObjects(level.objectLayerName, 'cannon', undefined, undefined, true, false, objects, Cannon);
 	}
 
 	collide(sprite) {
@@ -58,6 +71,9 @@ export default class World {
         }
         if(testMask(mask, Layers.COLLECTIBLE)) {
             this.game.physics.arcade.collide(sprite, this.collectibles, undefined, this._hitCollectible, this);
+        }
+        if(testMask(mask, Layers.OBJECTS)) {
+            this.game.physics.arcade.collide(sprite, this.objects, undefined, this._hitObject, this);
         }
 	}
 
@@ -84,6 +100,15 @@ export default class World {
         return false;
     }
 
+    _hitObject(sprite, object) {
+        const callback = object.collide; //TODO symbol?
+        if(callback && (typeof callback === 'function')) {
+            return object.collide(sprite);
+        }
+
+        return true;
+    }
+
     _processTilemap(tilemap) {
         tilemap.setTileIndexCallback(Tiles.LAVA, this._hitLava, this);
 
@@ -93,7 +118,7 @@ export default class World {
 
                 switch(tile.index) {
                     case Tiles.START:
-                        let px = x * Math.round(tilemap.tileWidth + tilemap.tileWidth / 2),
+                        let px = Math.round(x * tilemap.tileWidth + tilemap.tileWidth / 2),
                             py = (y + 1) * tilemap.tileHeight;
 
                         this.start.setTo(px, py);
