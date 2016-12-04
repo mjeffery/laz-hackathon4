@@ -61,6 +61,10 @@ export default class World {
         tilemap.createFromObjects(level.objectLayerName, 'cannon', undefined, undefined, true, false, objects, Cannon);
 	}
 
+    think() {
+        this.objects.callAllExists('think', true)
+    }
+
 	collide(sprite) {
         const mask = Layers.getMask(sprite)
 

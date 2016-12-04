@@ -49,8 +49,10 @@ export default class Game extends TransitionState {
 		const player = this.player,
 			  world = this.world;
 
-		this.world.collide(this.player);
+		world.collide(player);
 		player.think();
+        world.think();
+
         this.collectedEffect.think();
 	}
 }
