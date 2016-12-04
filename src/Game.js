@@ -4,6 +4,7 @@ import TransitionState from './TransitionState'
 import Input from './Input'
 import Player from './player/Player'
 import World from './World'
+import CollectedEffect from './CollectedEffect'
 
 const Constants = {
     fadeInDelay: 300,
@@ -30,6 +31,12 @@ export default class Game extends TransitionState {
         game.renderer.renderSession.roundPixels = true;
 		game.camera.follow(player);
         //game.camera.deadzone = new Rectangle(0, 0, 0, 0);
+        
+        const effect = this.collectedEffect = new CollectedEffect(game)
+        world.events.onTouchCollectible.add( (sprite, coin) => {
+            coin.kill()
+            effect.collect(coin)
+        });
 
         this.fadeIn(Constants.fadeInDelay, Constants.fadeInDuration);
 	}
@@ -40,6 +47,7 @@ export default class Game extends TransitionState {
 
 		this.world.collide(this.player);
 		player.think();
+        this.collectedEffect.think();
 	}
 
     getCurrentLevel() {

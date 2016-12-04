@@ -98,12 +98,12 @@ export default class World {
 
                         this.start.setTo(px, py);
                         tilemap.putTile(Tiles.EMPTY, x, y);
-                        break;
+                    break;
 
                     case Tiles.EXIT:
                         tilemap.setTileLocationCallback(x, y, 1, 1, this._hitExit, this);
                         tilemap.putTile(Tiles.EMPTY, x, y);
-                        break;
+                    break;
                 }
             }
         }
