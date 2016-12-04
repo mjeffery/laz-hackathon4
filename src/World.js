@@ -40,7 +40,6 @@ export default class World {
 
         this._processTilemap(tilemap);
 
-        new CollectibleEffect(game);
         const collectibles = this.collectibles = game.add.group();
         tilemap.createFromObjects(level.objectLayerName, 'coin', undefined, undefined, true, false, collectibles, Collectible);
 	}

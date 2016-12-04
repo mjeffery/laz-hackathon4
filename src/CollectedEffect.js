@@ -1,29 +1,76 @@
 import Collectible from './Collectible'
+import Timer from './Timer'
+
+export const Constants = {
+    lifespan: 500,
+    resetDelay: 500,
+    sounds: [] //initialized in CollectedEffect.preload
+}
 
 export default class CollectedEffect {
     
     static preload(load) {
-        load.spritesheet('ruby-debris', 'assets/spritesheet/ruby-debris.png', 8, 8)
+        load.spritesheet('ruby-debris', 'assets/spritesheet/ruby-debris.png', 8, 8);
+
+        for(let i = 0; i < 6; i++) {
+            const id = `coin-${i}`;
+            Constants.sounds.push(id);
+            load.audio(id, `assets/audio/pickup_${i}.mp3`)
+        }
     }
 
     constructor(game) {
         this.game = game;
 
-        const emitter = this.emitter = game.add.emitter();
-        emitter.makeParticles('ruby-debris', [0, 1, 2, 3]);
-        emitter.gravity = 200;
-        emitter.minParticleSpeed.setTo(-50, -50);
-        emitter.maxParticleSpeed.setTo(150, 150);
-        emitter.maxRotation = 0;
-        emitter.minRotation = 0;
+        this.initEmitter();
+        this.initAudio();
 
         Collectible.onCollected.add(this.collect, this); 
     }
 
+    initEmitter() {
+        const emitter = this.emitter = this.game.add.emitter();
+
+        emitter.makeParticles('ruby-debris', [0, 1, 2, 3]);
+        emitter.gravity = 800;
+        emitter.minParticleSpeed.setTo(-50, -50);
+        emitter.maxParticleSpeed.setTo(150, 150);
+        emitter.maxRotation = 50;
+        emitter.minRotation = -50;
+        emitter.setAlpha(1, 0.2, Constants.lifespan);
+    }
+
+    initAudio() {
+        const add = this.game.add;
+        
+        this.sounds = Constants.sounds.map( id => add.audio(id) )
+        this.soundIndex = 0;
+        this.resetTimer = new Timer(this.game);
+    }
+
+    think() {
+        this.resetTimer.update();
+    }
+
     collect(coin) {
         coin.kill();
+        
+        this.playNextSound();
+
         this.emitter.x = coin.x;
         this.emitter.y = coin.y;
-        this.emitter.start(true, 300, 0, 5);
+        this.emitter.start(true, Constants.lifespan, 0, 5);
+    }
+
+    playNextSound() {
+        let prevIndex = this.soundIndex;
+        if(this.resetTimer.isDone()) {
+            this.soundIndex = 0;
+        } else {
+            this.soundIndex = Math.min(5, this.soundIndex + 1);
+        }
+        
+        this.resetTimer.setTime(Constants.resetDelay);
+        this.sounds[this.soundIndex].play();
     }
 }
