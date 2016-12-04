@@ -19,7 +19,6 @@ export default class Preload extends TransitionState {
 		//PRELOAD RESOURCES HERE
         Fader.preload(load);
 		Player.preload(load);		
-		World.preload(load);
         Collectible.preload(load);
         CollectedEffect.preload(load);
 	}

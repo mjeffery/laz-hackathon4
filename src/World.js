@@ -1,8 +1,10 @@
-import { Tilemap, Physics, Point } from 'phaser'
+import { Tilemap, Physics, Point, Signal } from 'phaser'
 
 import Collectible from './Collectible'
-import CollectibleEffect from './CollectedEffect'
+import { testMask } from './utils'
+
 import levels from './levels'
+import * as Layers from './layers'
 
 const Tiles = {
     EMPTY: 1,
@@ -12,22 +14,24 @@ const Tiles = {
     EXIT: 6
 }
 
-const Symbols = {
-    onCollideLava: Symbol('onCollideLava'),
-    onCollideExit: Symbol('onCollideExit'),
-    onCollideCollectible: Symbol('onCollideCollectible')
+class WorldEvents {
+
+    constructor(game) {
+        Object.assign(this, {
+            onTouchLava: new Signal(),
+            onTouchExit: new Signal(),
+            onTouchCollectible: new Signal()
+        })
+    } 
 }
 
 export default class World {
 	
-	static preload(load) {
-	}
-
 	constructor(game) {
 		this.game = game;
         this.start = new Point(0, 0);
+        this.events = new WorldEvents();
 
-        
         const level = levels.get(game.data.currentLevel);
 		const tilemap = game.add.tilemap(level.tilemap);
 		tilemap.addTilesetImage(level.tilesetName, level.tileset);
@@ -40,43 +44,43 @@ export default class World {
 
         this._processTilemap(tilemap);
 
-        new CollectibleEffect(game);
         const collectibles = this.collectibles = game.add.group();
         tilemap.createFromObjects(level.objectLayerName, 'coin', undefined, undefined, true, false, collectibles, Collectible);
 	}
 
 	collide(sprite) {
-        if(sprite.collidesWithWorld) {
+        const mask = Layers.getMask(sprite)
+
+        //TODO process groups recursively?
+        if(testMask(mask, Layers.TERRAIN)) {
+            //TODO must collide with terrain to collide with lava or exit.. will need to fix this...
             this.game.physics.arcade.collide(this.layer, sprite);
+        }
+        if(testMask(mask, Layers.COLLECTIBLE)) {
             this.game.physics.arcade.collide(sprite, this.collectibles, undefined, this._hitCollectible, this);
         }
 	}
 
     _hitLava(sprite, tile) {
-        const callback = sprite[Symbols.onCollideLava] 
-        if(callback && (typeof callback === 'function')) {
-            callback.call(sprite, tile);
+        const mask = Layers.getMask(sprite)
+        if(testMask(mask, Layers.LAVA)) {
+            this.events.onTouchLava.dispatch(sprite, tile);
         }
 
         return true;
     }
 
     _hitExit(sprite, tile) {
-        const callback = sprite[Symbols.onCollideExit]
-        if(callback && (typeof callback === 'function')) {
-            callback.call(sprite, tile)
+        const mask = Layers.getMask(sprite)
+        if(testMask(mask, Layers.EXIT)) {
+            this.events.onTouchExit.dispatch(sprite, tile);
         }
-
+        
         return false;
     }
 
     _hitCollectible(sprite, collectible) {
-        const callback = sprite[Symbols.onCollideCollectible]
-        if(callback && (typeof callback == 'function')) {
-            callback.call(sprite, collectible);
-            Collectible.onCollected.dispatch(collectible);
-        }
-
+        this.events.onTouchCollectible.dispatch(sprite, collectible);
         return false;
     }
 
@@ -107,4 +111,3 @@ export default class World {
     }
 }
 
-Object.assign(World, Symbols)

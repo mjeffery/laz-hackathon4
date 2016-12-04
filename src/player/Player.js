@@ -3,7 +3,9 @@ import { Sprite, Physics } from 'phaser'
 import StateMachine from '../StateMachine'
 import { LEFT, RIGHT, JUMP } from '../Input'
 import Timer from '../Timer'
-import World from '../World'
+
+import { makeMask } from '../utils'
+import * as Layers from '../layers'
 
 export const START = 'start';
 export const STANDING = 'standing';
@@ -64,7 +66,7 @@ export default class Player extends Sprite {
         this.body.maxVelocity.setTo(Constants.maxSpeed, 10 * Constants.maxSpeed);
         this.body.collideWorldBounds = true;
 
-        this.collidesWithWorld = true;
+        this._collisionMask = makeMask(Layers.ALL)
     }
 
     initGraphics() {
@@ -227,7 +229,7 @@ export default class Player extends Sprite {
         return this.body.onFloor();
     }
 
-    [World.onCollideCollectible](coin) {
-        //TODO this is crazy...
+    [Layers.getCollisionMask]() {
+        return this._collisionMask; 
     }
 }

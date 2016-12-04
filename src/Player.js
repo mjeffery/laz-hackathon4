@@ -41,7 +41,6 @@ export default class Player extends Sprite {
 		this.input = input;
         this.state = new StateMachine('start');
 		this.facing = 'right';
-        this.collidesWithWorld = true;
 		this.jumpTimer = new Timer(game);
         this.jumpFudgeTimer = new Timer(game);
 
