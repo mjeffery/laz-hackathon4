@@ -41,6 +41,9 @@ export default class Player extends Sprite {
 
     static preload(load) {
         load.spritesheet('player', 'assets/spritesheet/player.png', 64, 64);
+        load.audio('jump', 'assets/audio/spring.mp3');
+        load.audio('land', 'assets/audio/hop.mp3');
+        load.audio('thud', 'assets/audio/thud.mp3');
     }
 
     constructor(game, x, y, controls) {
@@ -51,6 +54,7 @@ export default class Player extends Sprite {
 
         this.initControls();
         this.initGraphics();
+        this.initAudio();
         this.initPhysics();
 
         this.updateState();
@@ -88,6 +92,14 @@ export default class Player extends Sprite {
         this.animations.add('fall', [5]);
         this.animations.add('hurt', [6]);
         this.animations.add('pose', [7]);
+    }
+
+    initAudio() {
+        this.sounds = {
+            jump: this.game.add.audio('jump'),
+            land: this.game.add.audio('land'),
+            thud: this.game.add.audio('thud')
+        }
     }
 
     think() {
@@ -174,6 +186,7 @@ export default class Player extends Sprite {
                 {
                     this.jump();
                 } else if(this.onFloor()) {
+                    this.sounds.land.play();
                     if(this.controlVelocity != 0) {
                         this.walk();
                     } else {
@@ -235,7 +248,9 @@ export default class Player extends Sprite {
 
     jump() {
         this.state.change(JUMPING);
+
         this.animations.play('jump');
+        this.sounds.jump.play();
 
         this.jumpTimer.setTime(Constants.jump.repeatDelay);
         this.jumpPressTimer.setTime(Constants.jump.duration);
