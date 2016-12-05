@@ -63,7 +63,7 @@
 /******/ 	}
 /******/
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "bd13199ab7158707ba6e"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "84875b61eb889c0ed440"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/
@@ -91957,7 +91957,7 @@
 	
 		var keyboard = game.input.keyboard;
 	
-		(0, _assign2.default)(this, (_Object$assign2 = {}, (0, _defineProperty3.default)(_Object$assign2, LEFT, keyboard.addKey(_phaser.Keyboard.LEFT)), (0, _defineProperty3.default)(_Object$assign2, RIGHT, keyboard.addKey(_phaser.Keyboard.RIGHT)), (0, _defineProperty3.default)(_Object$assign2, JUMP, keyboard.addKey(_phaser.Keyboard.SPACE)), _Object$assign2));
+		(0, _assign2.default)(this, (_Object$assign2 = {}, (0, _defineProperty3.default)(_Object$assign2, LEFT, keyboard.addKey(_phaser.Keyboard.LEFT)), (0, _defineProperty3.default)(_Object$assign2, RIGHT, keyboard.addKey(_phaser.Keyboard.RIGHT)), (0, _defineProperty3.default)(_Object$assign2, JUMP, keyboard.addKey(_phaser.Keyboard.SPACEBAR)), _Object$assign2));
 	};
 	
 	exports.default = Input;
