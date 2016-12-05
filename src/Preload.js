@@ -5,6 +5,7 @@ import World from './World'
 import Collectible from './Collectible'
 import CollectedEffect from './CollectedEffect'
 import Cannon from './Cannon'
+import Lava from './Lava'
 
 export default class Preload extends TransitionState {
 	preload() {
@@ -24,6 +25,7 @@ export default class Preload extends TransitionState {
         CollectedEffect.preload(load);
         World.preload(load);
         Cannon.preload(load);
+        Lava.preload(load);
 	}
 
 	onLoadComplete() {

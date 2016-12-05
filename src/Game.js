@@ -8,7 +8,12 @@ import CollectedEffect from './CollectedEffect'
 
 const Constants = {
     fadeInDelay: 300,
-    fadeInDuration: 750
+    fadeInDuration: 750,
+    winDuration: 1200,
+    deathDuration: 3000,
+    lavaDeathDelay: 100,
+    fadeOutDuration: 750,
+    fadeOutDelay: 300 
 }
 
 export default class Game extends TransitionState {
@@ -28,6 +33,8 @@ export default class Game extends TransitionState {
 
 		add.existing(player);
 
+        game.world.bringToTop(world.lava); //fix to bring lava in front of player
+
         game.renderer.renderSession.roundPixels = true;
 		game.camera.follow(player);
         //game.camera.deadzone = new Rectangle(0, 0, 0, 0);
@@ -38,8 +45,31 @@ export default class Game extends TransitionState {
             effect.collect(coin)
         });
 
-        world.events.onTouchExit.add( (sprite, tile) => {
-            
+        world.events.onTouchLava.add( (sprite, tile) => {
+            if(sprite === player) {
+
+                Promise.resolve()
+                    .then( () => this.wait( Constants.lavaDeathDelay ) )
+                    .then( () => {
+                        player.kill();
+                        //TODO return a promise from the BurningPlayer for when he's done
+                    })
+                    .then( () => this.wait( Constants.deathDuration ) )
+                    .then( () => this.fadeOut( Constants.fadeOutDuration, Constants.fadeOutDelay) )
+                    .then( () => this.game.restartLevel() )
+            }  
+        });
+
+        world.events.onTouchExit.addOnce( (sprite, tile) => {
+            Promise.resolve()
+                .then( () => {
+                    //TODO play a sound?
+                    //     show a ui thingy?
+                    this.player.win() 
+                })
+                .then( () => this.wait( Constants.winDuration) )
+                .then( () => this.fadeOut(Constants.fadeOutDuration, Constants.fadeOutDelay) )
+                .then( () => this.game.gotoNextLevel() )
         });
 
         this.fadeIn(Constants.fadeInDelay, Constants.fadeInDuration);

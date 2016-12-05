@@ -28,6 +28,9 @@ export default class TransitionState {
         add.existing(fader);
 
         return fader.fadeOut(duration, delay)
-            .then( () => fader.destroy() )     
+            .then( () => {
+                this.stage.backgroundColor = '#000';
+                fader.destroy();
+            })     
     }
 }

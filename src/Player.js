@@ -35,10 +35,10 @@ export default class Player extends Sprite {
         load.spritesheet('player', 'assets/spritesheet/test player.png', 32, 64);
 	}
 
-	constructor(game, x, y, input) {
+	constructor(game, x, y, controls) {
 		super(game, x, y, 'player');
         this.events = new PlayerEvents(this);
-		this.input = input;
+		this.controls = controls;
         this.state = new StateMachine('start');
 		this.facing = 'right';
 		this.jumpTimer = new Timer(game);

@@ -26,6 +26,8 @@ export default class LevelIntro extends TransitionState {
 
         text.setTextBounds(0, 0, 800, 600);
 
+        this.stage.backgroundColor = '#000';
+
         this.fadeIn(Constants.fadeInDelay, Constants.fadeInDuration)
             .then( () => this.wait(Constants.introDuration) )
             .then( () => this.fadeOut(Constants.fadeOutDuration, Constants.fadeOutDelay) )
