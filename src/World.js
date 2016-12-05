@@ -123,7 +123,7 @@ export default class World {
 
         for(let x = 0; x < tilemap.width; x++) {
             for(let y = 0; y < tilemap.height; y++) {
-                let tile = tilemap.getTile(x, y); 
+                let tile = tilemap.getTile(x, y, undefined, true); 
                 let px, py;
 
                 switch(tile.index) {

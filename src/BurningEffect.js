@@ -42,7 +42,7 @@ export default class BurningEffect {
     }
 
     think() {
-        this.emitter.x = this.target.x + this.offset.x;
-        this.emitter.y = this.target.y + this.offset.y;
+        this.emitter.emitX = this.target.x + this.offset.x;
+        this.emitter.emitY = this.target.y + this.offset.y;
     }
 }

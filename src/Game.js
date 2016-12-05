@@ -1,4 +1,4 @@
-import { Physics } from 'phaser'
+import { Camera, Physics } from 'phaser'
 
 import TransitionState from './TransitionState'
 import Input from './Input'
@@ -36,7 +36,7 @@ export default class Game extends TransitionState {
         game.world.bringToTop(world.lava); //fix to bring lava in front of player
 
         game.renderer.renderSession.roundPixels = true;
-		game.camera.follow(player);
+		game.camera.follow(player, Camera.FOLLOW_PLATFORMER);
         //game.camera.deadzone = new Rectangle(0, 0, 0, 0);
         
         const effect = this.collectedEffect = new CollectedEffect(game)
