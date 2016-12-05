@@ -1,11 +1,12 @@
 import TransitionState from './TransitionState'
 import Fader from './Fader'
-import Player from './Player'
+import Player from './Player/Player'
 import World from './World'
 import Collectible from './Collectible'
 import CollectedEffect from './CollectedEffect'
 import Cannon from './Cannon'
 import Lava from './Lava'
+import BurningEffect from './BurningEffect'
 
 export default class Preload extends TransitionState {
 	preload() {
@@ -26,6 +27,7 @@ export default class Preload extends TransitionState {
         World.preload(load);
         Cannon.preload(load);
         Lava.preload(load);
+        BurningEffect.preload(load);
 	}
 
 	onLoadComplete() {

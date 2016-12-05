@@ -49,9 +49,8 @@ export default class Game extends TransitionState {
             if(sprite === player) {
 
                 Promise.resolve()
-                    .then( () => this.wait( Constants.lavaDeathDelay ) )
                     .then( () => {
-                        player.kill();
+                        player.burn();
                         //TODO return a promise from the BurningPlayer for when he's done
                     })
                     .then( () => this.wait( Constants.deathDuration ) )

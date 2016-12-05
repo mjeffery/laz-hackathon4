@@ -35,7 +35,7 @@ export default class CollectedEffect {
         emitter.makeParticles('ruby-debris', [0, 1, 2, 3]);
         emitter.gravity = 800;
         emitter.minParticleSpeed.setTo(-50, -50);
-        emitter.maxParticleSpeed.setTo(150, 150);
+        emitter.maxParticleSpeed.setTo(50, 150);
         emitter.maxRotation = 50;
         emitter.minRotation = -50;
         emitter.setAlpha(1, 0.2, Constants.lifespan);

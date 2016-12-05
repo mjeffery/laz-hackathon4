@@ -1,8 +1,9 @@
-import { Sprite, Physics } from 'phaser'
+import { Sprite, Physics, Point } from 'phaser'
 
 import StateMachine from '../StateMachine'
 import { LEFT, RIGHT, JUMP } from '../Input'
 import Timer from '../Timer'
+import BurningEffect from '../BurningEffect'
 
 import { makeMask } from '../utils'
 import * as Layers from '../layers'
@@ -12,6 +13,7 @@ export const STANDING = 'standing';
 export const WALKING = 'walking';
 export const JUMPING = 'jumping';
 export const FALLING = 'falling';
+export const BURNING = 'burning'; //TODO not happy about this-- maybe a second set of parent states?
 
 const Constants = {
     gravity: 1200,
@@ -27,13 +29,18 @@ const Constants = {
         acceleration: 1800,
         drag: 2900, //1400,
         animRate: 7
+    }, 
+    burn: {
+        drag: 100,
+        bounce: new Point(0.4, 0.9),
+        offset: new Point(0, -16)
     }
 }
 
 export default class Player extends Sprite {
 
     static preload(load) {
-        load.spritesheet('player', 'assets/spritesheet/test player.png', 32, 64);
+        load.spritesheet('player', 'assets/spritesheet/player.png', 64, 64);
     }
 
     constructor(game, x, y, controls) {
@@ -79,6 +86,8 @@ export default class Player extends Sprite {
         this.animations.add('walk', [0, 1, 2, 3], Constants.walk.animRate, true);
         this.animations.add('jump', [4]);
         this.animations.add('fall', [5]);
+        this.animations.add('hurt', [6]);
+        this.animations.add('pose', [7]);
     }
 
     think() {
@@ -172,13 +181,29 @@ export default class Player extends Sprite {
                     }
                 } 
             break;
+
+            case BURNING:
+                this.burningEffect.think();
+                if(this.body.velocity.x < 0) {
+                    this.scale.x = -1;
+                    this.facing = 'left';
+                } else {
+                    this.scale.x = 1;
+                    this.facing = 'right';
+                }
+                break;
         }
     }
 
     updateMovement() {
         this.body.acceleration.x = Constants.walk.acceleration * this.controlVelocity;
 
-        let drag = this.onFloor() ? Constants.walk.drag : Constants.jump.drag;
+        let drag = 0;
+        if(this.burning) {
+            drag = Constants.burn.drag;
+        } else {
+            drag = this.onFloor() ? Constants.walk.drag : Constants.jump.drag;
+        }
         this.body.drag.setTo(drag, 0);
 
         if(this.controlVelocity < 0 && this.facing != 'left') {
@@ -203,7 +228,8 @@ export default class Player extends Sprite {
 
     stand() {
         this.state.change(STANDING);
-        this.animations.play('stand');
+        let anim = this.winning ? 'pose' : 'stand';
+        this.animations.play(anim);
         this.jumping = false;
     }
 
@@ -230,7 +256,21 @@ export default class Player extends Sprite {
 
     win() {
         this.controlsActive = false;
+        this.winning = true;
         this._collisionMask = makeMask(Layers.TERRAIN);
+        if(this.state.current === STANDING)
+            this.animations.play('pose');
+    }
+
+    burn() {
+        this.state.change(BURNING);
+        this.animations.play('hurt');
+        this.controlsActive = false;
+        this._collisionMask = makeMask(Layers.TERRAIN);
+        this.body.bounce.copyFrom(Constants.burn.bounce);
+        this.burning = true;
+
+        const effect = this.burningEffect = new BurningEffect(this.game, this, Constants.burn.offset);
     }
 
     onFloor() {
