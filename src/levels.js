@@ -22,6 +22,10 @@ class Levels {
         this._levels = levelData.map( data => new Level(data) )
     }
 
+    get count() {
+        return this._levels.length;
+    }
+
     get(index) {
         return this._levels[index];
     }

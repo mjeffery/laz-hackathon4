@@ -8,7 +8,10 @@ import CollectedEffect from './CollectedEffect'
 
 const Constants = {
     fadeInDelay: 300,
-    fadeInDuration: 750
+    fadeInDuration: 750,
+    winDuration: 1200,
+    fadeOutDuration: 750,
+    fadeOutDelay: 300 
 }
 
 export default class Game extends TransitionState {
@@ -38,8 +41,16 @@ export default class Game extends TransitionState {
             effect.collect(coin)
         });
 
-        world.events.onTouchExit.add( (sprite, tile) => {
-            
+        world.events.onTouchExit.addOnce( (sprite, tile) => {
+            Promise.resolve()
+                .then( () => {
+                    //TODO play a sound?
+                    //     show a ui thingy?
+                    this.player.win() 
+                })
+                .then( () => this.wait( Constants.winDuration) )
+                .then( () => this.fadeOut(Constants.fadeOutDuration, Constants.fadeOutDelay) )
+                .then( () => this.game.gotoNextLevel() )
         });
 
         this.fadeIn(Constants.fadeInDelay, Constants.fadeInDuration);

@@ -36,9 +36,9 @@ export default class Player extends Sprite {
         load.spritesheet('player', 'assets/spritesheet/test player.png', 32, 64);
     }
 
-    constructor(game, x, y, input) {
+    constructor(game, x, y, controls) {
         super(game, x, y, 'player')
-        this.input = input;
+        this.controls = controls;
 
         this.state = new StateMachine(START); 
 
@@ -50,6 +50,8 @@ export default class Player extends Sprite {
     }
 
     initControls() {
+        this.controlsActive = true;
+
         this.controlVelocity = 0;
         this.wantsToJump = false;
         this.jumping = false;
@@ -90,21 +92,20 @@ export default class Player extends Sprite {
     }
 
     updateControls() {
-        const input = this.input;
+        const controls = this.controls;
 
-        this.controlsActive = true;
         this.controlVelocity = 0;
         this.wantsToJump = false;
 
-        //if(this.inputEnabled) {
-            if(input[LEFT].isDown) {
+        if(this.controlsActive) {
+            if(controls[LEFT].isDown) {
                 this.controlVelocity = -1;
-            } else if(input[RIGHT].isDown) {
+            } else if(controls[RIGHT].isDown) {
                 this.controlVelocity = 1;
             }
             
-            this.wantsToJump = input[JUMP].isDown;
-        //}
+            this.wantsToJump = controls[JUMP].isDown;
+        }
     }
 
     updateState() {
@@ -224,6 +225,11 @@ export default class Player extends Sprite {
     walk() {
         this.state.change(WALKING);
         this.animations.play('walk');
+    }
+
+    win() {
+        this.controlsActive = false;
+        this._collisionMask = makeMask(Layers.TERRAIN);
     }
 
     onFloor() {

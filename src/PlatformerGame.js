@@ -3,6 +3,7 @@ import { Game as PhaserGame } from 'phaser'
 import Boot from './Boot'
 import Preload from './Preload'
 import LevelIntro from './LevelIntro'
+import Winner from './Winner'
 import Game from './Game'
 import GameData from './GameData'
 
@@ -18,6 +19,7 @@ export default class PlatformerGame extends PhaserGame {
         this.state.add('preload', Preload);
         this.state.add('levelIntro', LevelIntro);
         this.state.add('game', Game);
+        this.state.add('winner', Winner);
 
         this.state.start('boot');
     }
@@ -28,4 +30,14 @@ export default class PlatformerGame extends PhaserGame {
         this.data.currentLevel = 0;
 		this.state.start('levelIntro');
     } 
+
+    gotoNextLevel() {
+        this.data.currentLevel++;
+        if(this.data.currentLevel >= levels.count) {
+            this.state.start('winner');
+        }
+        else { 
+            this.state.start('levelIntro');
+        }
+    }
 }
