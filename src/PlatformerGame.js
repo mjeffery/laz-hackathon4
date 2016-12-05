@@ -12,8 +12,8 @@ import levels from './levels'
 export default class PlatformerGame extends PhaserGame {
 
     constructor(...args) {
-        super(...args)
-        this._data = new GameData()
+        super(...args);
+        this._data = new GameData();
 
         this.state.add('boot', Boot);
         this.state.add('preload', Preload);
@@ -39,5 +39,9 @@ export default class PlatformerGame extends PhaserGame {
         else { 
             this.state.start('levelIntro');
         }
+    }
+
+    restartLevel() {
+        this.state.start('levelIntro');
     }
 }

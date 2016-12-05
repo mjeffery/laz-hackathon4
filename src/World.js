@@ -2,6 +2,7 @@ import { Tilemap, Physics, Point, Signal } from 'phaser'
 
 import Collectible from './Collectible'
 import Cannon from './Cannon'
+import Lava, { LavaManager } from './Lava'
 import { testMask } from './utils'
 
 import levels from './levels'
@@ -46,7 +47,7 @@ export default class World {
 		layer.resizeWorld();
 		game.physics.enable(layer, Physics.ARCADE);
 		
-		tilemap.setCollision([2,3,4]);
+		tilemap.setCollision([Tiles.SOLID]);
 
         this._processTilemap(tilemap);
 
@@ -63,6 +64,7 @@ export default class World {
 
     think() {
         this.objects.callAllExists('think', true)
+        this.lavaManager.update();
     }
 
 	collide(sprite) {
@@ -87,7 +89,7 @@ export default class World {
             this.events.onTouchLava.dispatch(sprite, tile);
         }
 
-        return true;
+        return false;
     }
 
     _hitExit(sprite, tile) {
@@ -116,14 +118,18 @@ export default class World {
     _processTilemap(tilemap) {
         tilemap.setTileIndexCallback(Tiles.LAVA, this._hitLava, this);
 
+        this.lavaManager = new LavaManager(this.game);
+        this.lava = this.game.add.group();
+
         for(let x = 0; x < tilemap.width; x++) {
             for(let y = 0; y < tilemap.height; y++) {
                 let tile = tilemap.getTile(x, y); 
+                let px, py;
 
                 switch(tile.index) {
                     case Tiles.START:
-                        let px = Math.round(x * tilemap.tileWidth + tilemap.tileWidth / 2),
-                            py = (y + 1) * tilemap.tileHeight;
+                        px = Math.round(x * tilemap.tileWidth + tilemap.tileWidth / 2);
+                        py = (y + 1) * tilemap.tileHeight;
 
                         this.start.setTo(px, py);
                         tilemap.putTile(Tiles.EMPTY, x, y);
@@ -132,6 +138,15 @@ export default class World {
                     case Tiles.EXIT:
                         tilemap.setTileLocationCallback(x, y, 1, 1, this._hitExit, this);
                         tilemap.putTile(Tiles.EMPTY, x, y);
+                    break;
+
+                    case Tiles.LAVA:
+                        px = x * tilemap.tileWidth;
+                        py = y * tilemap.tileHeight;
+                        
+                        let lavaPiece = new Lava(this.game, px, py, this.lavaManager); 
+
+                        this.lava.add(lavaPiece);
                     break;
                 }
             }
