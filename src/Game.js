@@ -85,4 +85,10 @@ export default class Game extends TransitionState {
 
         this.collectedEffect.think();
 	}
+
+    /*
+    render() {
+        this.game.debug.body(this.player);
+    }
+    */
 }

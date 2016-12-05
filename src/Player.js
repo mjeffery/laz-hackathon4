@@ -32,7 +32,7 @@ class PlayerEvents extends Events {
 export default class Player extends Sprite {
 
 	static preload(load) {
-        load.spritesheet('player', 'assets/spritesheet/test player.png', 32, 64);
+        load.spritesheet('player', 'assets/spritesheet/player.png', 64, 64);
 	}
 
 	constructor(game, x, y, controls) {
@@ -55,6 +55,7 @@ export default class Player extends Sprite {
 
 		game.physics.enable(this, Physics.ARCADE);
 
+        this.body.setSize(32, 64, -16, -64);
 		this.body.gravity.set(0, Constants.gravity);
 		this.body.collideWorldBounds = true;
 	}

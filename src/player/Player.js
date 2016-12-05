@@ -43,8 +43,8 @@ export default class Player extends Sprite {
         this.state = new StateMachine(START); 
 
         this.initControls();
-        this.initPhysics();
         this.initGraphics();
+        this.initPhysics();
 
         this.updateState();
     }
@@ -64,6 +64,7 @@ export default class Player extends Sprite {
     initPhysics() {
         this.game.physics.enable(this, Physics.ARCADE);
 
+        this.body.setSize(32, 64, 16, 0);
         this.body.gravity.y = Constants.gravity;
         this.body.maxVelocity.setTo(Constants.maxSpeed, 10 * Constants.maxSpeed);
         this.body.collideWorldBounds = true;

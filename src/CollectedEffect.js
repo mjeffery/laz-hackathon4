@@ -4,7 +4,7 @@ import Timer from './Timer'
 export const Constants = {
     lifespan: 500,
     resetDelay: 750,
-    numberOfSounds: 6,
+    numberOfSounds: 8,
     sounds: [] //initialized in CollectedEffect.preload
 }
 
